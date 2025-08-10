@@ -1,59 +1,64 @@
 :root{
-  --bg:#fff4fb; --card:#ffe9ff; --ink:#5b3e66; --ink-soft:#7a5a86;
-  --accent:#ff69b4; --accent-2:#ffd166; --ok:#7cd992; --bad:#ff7675;
-  --radius:18px; --shadow:0 6px 20px rgba(0,0,0,.06);
-  --safe-w:min(430px, 100vw); /* מתאים לאייפון 16/פרו ומטה */
+  --bg:#ffeef7;
+  --card:#fff5fb;
+  --ink:#5b4760;
+  --accent:#ff6db1;
+  --accent-2:#ffd2eb;
+  --pill:#f9e6f2;
+  --radius:18px;
+  --shadow:0 6px 18px rgba(0,0,0,.06);
+  --safe-w:900px;
 }
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  color:var(--ink); background:linear-gradient(180deg,#fff8fe 0%,#ffeef9 100%);
-  display:grid; grid-template-rows:auto 1fr auto; place-items:stretch; 
+  margin:0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color:var(--ink);
+  background: radial-gradient(1200px 1200px at 10% 10%, #fff 0%, var(--bg) 60%, #fff 100%);
+  display:grid; grid-template-rows:auto 1fr auto; place-items:stretch;
 }
+
+/* Header */
 .app-header{
-  height:56px; display:flex; justify-content:space-between; align-items:center;
-  padding:0 16px; background:var(--card); box-shadow:var(--shadow);
+  position:sticky; top:0; z-index:10;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:10px 14px;
+  background:linear-gradient(180deg,#fff 0%, #fff8fc 40%, transparent 100%);
+  backdrop-filter:saturate(140%) blur(6px);
 }
 .brand{font-weight:800; letter-spacing:.3px}
-.wallet{background:#fff; padding:6px 12px; border-radius:999px; box-shadow:var(--shadow)}
-
-.view{padding:12px 14px 18px; max-width:var(--safe-w); width:100%; margin:0 auto}
-.card{
-  background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:16px;
+.wallet{
+  background:#fff; padding:6px 12px; border-radius:999px; box-shadow:var(--shadow);
 }
 
-.bottom-nav{
-  position:sticky; bottom:0; left:0; right:0; height:64px;
-  display:grid; grid-template-columns:repeat(5, 1fr); gap:6px;
-  padding:8px; background:#fff; box-shadow:0 -8px 24px rgba(0,0,0,.08);
+/* אזור התוכן */
+.screen{ min-height:calc(100dvh - 120px); }
+.view{ padding:14px 14px 110px; max-width:var(--safe-w); width:100%; margin:0 auto; }
+.card{ background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; }
+
+/* האבטר */
+.avatar-stage{ max-width:420px; margin:0 auto; border-radius:var(--radius); padding:22px; background:var(--card); box-shadow:var(--shadow); }
+.avatar-svg{ display:block; width:min(420px,82vw); height:auto; margin:0 auto; }
+
+/* ניווט תחתון */
+.tabs{
+  position:fixed; left:0; right:0; bottom:0; z-index:20;
+  display:flex; justify-content:space-around; align-items:center; gap:8px;
+  padding:10px 10px calc(env(safe-area-inset-bottom) + 10px);
+  background:#fff; backdrop-filter: blur(8px);
+  border-top:1px solid #f2d8e6;
 }
 .bottom-nav button{
-  border:none; background:var(--card); border-radius:14px; font-size:20px;
-  transition:transform .14s ease, box-shadow .14s ease; padding:8px 0;
+  appearance:none; border:0; background:var(--pill); color:var(--ink);
+  width:56px; height:46px; border-radius:14px; font-size:20px; box-shadow:var(--shadow);
 }
-.bottom-nav button:active{transform:scale(.94)}
-.bottom-nav button.is-active{
-  background:var(--accent); color:#fff; box-shadow:var(--shadow);
-}
-
-/* כפתורים כלליים */
-.btn{
-  border:none; background:var(--accent); color:#fff; padding:10px 14px;
-  border-radius:12px; font-weight:700; box-shadow:var(--shadow);
-}
-.btn.secondary{background:var(--accent-2); color:#5d3a00}
-
-/* אנימציות */
-@keyframes pop-in { 0%{transform:scale(.92); opacity:0} 100%{transform:scale(1); opacity:1} }
-.pop-in{animation:pop-in .25s ease both}
-
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-.bounce{animation:bounce 1.6s ease-in-out infinite}
-
-/* רשת קטלוג/כפתורי אימון */
-.grid{display:grid; gap:12px}
-.grid.cols-2{grid-template-columns:repeat(2,1fr)}
-.grid.cols-3{grid-template-columns:repeat(3,1fr)}
-.badge{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:12px; background:#fff}
-.mood--good{color:var(--ok)} .mood--bad{color:var(--bad)}
+.bottom-nav .is-active{ background:var(--accent); color:#fff; }
+.btn{ appearance:none; border:0; border-radius:12px; padding:10px 14px; background:var(--accent); color:#fff; box-shadow:var(--shadow); }
+.btn.secondary{ background:var(--pill); color:var(--ink); }
+.grid{ display:grid; gap:12px }
+.cols-2{ grid-template-columns:1fr 1fr }
+.cols-3{ grid-template-columns:repeat(3,1fr) }
+.pop-in{ animation:pop .25s ease-out }
+@keyframes pop{ from{transform:scale(.98); opacity:.2} to{transform:scale(1); opacity:1} }
