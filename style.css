@@ -1,59 +1,52 @@
 :root{
-  --bg:#fff4fb; --card:#ffe9ff; --ink:#5b3e66; --ink-soft:#7a5a86;
-  --accent:#ff69b4; --accent-2:#ffd166; --ok:#7cd992; --bad:#ff7675;
-  --radius:18px; --shadow:0 6px 20px rgba(0,0,0,.06);
-  --safe-w:min(430px, 100vw); /* מתאים לאייפון 16/פרו ומטה */
+  --bg:#fff6fb;
+  --panel:#ffffff;
+  --ink:#4a2c3a;
+  --accent:#ff79c6;
+  --accent-2:#b38bfa;
+  --soft:#ffe9ff;
 }
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  color:var(--ink); background:linear-gradient(180deg,#fff8fe 0%,#ffeef9 100%);
-  display:grid; grid-template-rows:auto 1fr auto; place-items:stretch; 
-}
-.app-header{
-  height:56px; display:flex; justify-content:space-between; align-items:center;
-  padding:0 16px; background:var(--card); box-shadow:var(--shadow);
-}
-.brand{font-weight:800; letter-spacing:.3px}
-.wallet{background:#fff; padding:6px 12px; border-radius:999px; box-shadow:var(--shadow)}
 
-.view{padding:12px 14px 18px; max-width:var(--safe-w); width:100%; margin:0 auto}
-.card{
-  background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:16px;
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Arial, sans-serif; color:var(--ink); background:var(--bg); }
+
+.app-header{
+  position:sticky; top:0; display:flex; justify-content:space-between; align-items:center;
+  padding:14px 16px; background:#fff; border-bottom:1px solid #f0d8ee; z-index:10;
+}
+.brand{ font-weight:800; letter-spacing:.2px; font-size:18px; }
+.wallet{ background:var(--soft); padding:6px 10px; border-radius:999px; font-weight:700; }
+
+.builder{ max-width:980px; margin:10px auto 88px; padding:14px; display:grid; grid-template-columns: 1fr; gap:14px; }
+@media(min-width:820px){ .builder{ grid-template-columns: 360px 1fr; align-items:start; } }
+
+.stage{
+  background:var(--panel); border-radius:18px; padding:18px; display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 10px 30px rgba(255,121,198,.12);
+  min-height:440px;
+}
+#avatar{ width:100%; height:auto; max-width:340px; filter: drop-shadow(0 2px 0 rgba(0,0,0,.06)); }
+
+.panels{ display:grid; gap:12px; }
+.panel{ background:var(--panel); border-radius:14px; padding:12px; box-shadow: 0 6px 16px rgba(179,139,250,.12); }
+.panel h3{ margin:0 0 8px; font-size:14px; opacity:.8; }
+.panel.row{ display:flex; align-items:center; justify-content:space-between; }
+.controls button{
+  width:40px; height:36px; border:none; border-radius:10px; background:var(--soft); font-weight:800; cursor:pointer;
+}
+.controls .value{ display:inline-block; min-width:54px; text-align:center; font-weight:700; }
+
+.swatches{ display:flex; gap:8px; flex-wrap:wrap; }
+.swatches button{
+  width:28px; height:28px; border-radius:999px; border:2px solid #fff; box-shadow:0 0 0 2px rgba(0,0,0,.05); cursor:pointer;
 }
 
 .bottom-nav{
-  position:sticky; bottom:0; left:0; right:0; height:64px;
-  display:grid; grid-template-columns:repeat(5, 1fr); gap:6px;
-  padding:8px; background:#fff; box-shadow:0 -8px 24px rgba(0,0,0,.08);
+  position:fixed; left:0; right:0; bottom:0; display:flex; gap:8px; padding:10px; background:#fff;
+  border-top:1px solid #f0d8ee; z-index:10;
 }
 .bottom-nav button{
-  border:none; background:var(--card); border-radius:14px; font-size:20px;
-  transition:transform .14s ease, box-shadow .14s ease; padding:8px 0;
+  flex:1; padding:10px 6px; border:none; border-radius:12px; background:var(--soft); font-weight:700;
 }
-.bottom-nav button:active{transform:scale(.94)}
-.bottom-nav button.is-active{
-  background:var(--accent); color:#fff; box-shadow:var(--shadow);
-}
-
-/* כפתורים כלליים */
-.btn{
-  border:none; background:var(--accent); color:#fff; padding:10px 14px;
-  border-radius:12px; font-weight:700; box-shadow:var(--shadow);
-}
-.btn.secondary{background:var(--accent-2); color:#5d3a00}
-
-/* אנימציות */
-@keyframes pop-in { 0%{transform:scale(.92); opacity:0} 100%{transform:scale(1); opacity:1} }
-.pop-in{animation:pop-in .25s ease both}
-
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-.bounce{animation:bounce 1.6s ease-in-out infinite}
-
-/* רשת קטלוג/כפתורי אימון */
-.grid{display:grid; gap:12px}
-.grid.cols-2{grid-template-columns:repeat(2,1fr)}
-.grid.cols-3{grid-template-columns:repeat(3,1fr)}
-.badge{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:12px; background:#fff}
-.mood--good{color:var(--ok)} .mood--bad{color:var(--bad)}
+.bottom-nav button.active{ background:linear-gradient(180deg, var(--accent), var(--accent-2)); color:#fff; }
+.hint{ margin:.3rem 0 0; opacity:.6; font-size:12px; }
