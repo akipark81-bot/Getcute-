@@ -1,31 +1,23 @@
-// --- Force-refresh SW & cache ---
-const CACHE = 'getcute-v9'; // העלי מספר בכל עדכון
-
+const CACHE  = 'getcute-v10';
 const ASSETS = [
-  './',
-  './index.html',
-  './style.css?v=6',
-  './app.js?v=6',
-  './manifest.json',
-  './assets/icon-192.png',
-  './assets/icon-512.png',
-  './assets/avatar_parts.svg'
+  '/', 'index.html',
+  'style.css', 'app.js', 'manifest.json',
+  'assets/icon-192.png', 'assets/icon-512.png',
+  'assets/avatar.svg', 'assets/stars.svg',
+  'assets/avatar_parts.svg'
 ];
 
-self.addEventListener('install', (e) => {
-  self.skipWaiting(); // תתקין ותיקח שליטה מיד
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+self.addEventListener('install', e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
 });
-
-self.addEventListener('activate', (e) => {
+self.addEventListener('activate', e=>{
   e.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+      Promise.all(keys.map(k => k!==CACHE && caches.delete(k))))
   );
-  self.clients.claim(); // תחליף את הגרסה הישנה בכל הטאבים
 });
-
-self.addEventListener('fetch', (e) => {
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+self.addEventListener('fetch', e=>{
+  e.respondWith(
+    caches.match(e.request).then(res => res || fetch(e.request))
+  );
 });
