@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff9fe"/>
+      <stop offset="1" stop-color="#ffe6f7"/>
+    </linearGradient>
+  </defs>
+  <!-- רקע עגול -->
+  <rect x="16" y="16" width="480" height="480" rx="40" fill="url(#bg)"/>
+  <!-- פנים -->
+  <circle cx="256" cy="220" r="90" fill="#ffe9d6" stroke="#d7b9a2" stroke-width="3"/>
+  <!-- לחיים -->
+  <circle cx="220" cy="240" r="12" fill="#ffb4c8"/>
+  <circle cx="292" cy="240" r="12" fill="#ffb4c8"/>
+  <!-- עיניים -->
+  <circle cx="230" cy="220" r="8" fill="#57424f"/>
+  <circle cx="282" cy="220" r="8" fill="#57424f"/>
+  <!-- שיער -->
+  <path d="M176 220c0-56 42-92 80-92s80 36 80 92c-22-18-48-26-80-26s-58 8-80 26z"
+        fill="#6b4a7a"/>
+  <!-- גוף -->
+  <rect x="198" y="300" width="116" height="96" rx="20"
+        fill="#9cc8ff" stroke="#6aa7ff" stroke-width="3"/>
+  <!-- סרט מתוק -->
+  <path d="M236 172c-10 10-18 16-26 18 8 2 16 8 26 18 10-10 18-16 26-18-8-2-16-8-26-18z"
+        fill="#ff96d5"/>
+</svg>
