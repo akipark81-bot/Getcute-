@@ -1,5 +1,5 @@
 // --- Force-refresh SW & cache ---
-const CACHE = 'getcute-v7'; // העלי מספר בכל עדכון
+const CACHE = 'getcute-v9'; // העלי מספר בכל עדכון
 
 const ASSETS = [
   './',
