@@ -1,4 +1,4 @@
-const CACHE = 'getcute-v3'; // אם קודם היה v2
+const CACHE = 'getcute-v4'; // אם קודם היה v2
 const ASSETS = ['.', 'index.html', 'style.css', 'app.js', 'manifest.json',
   'assets/icon-192.png','assets/icon-512.png','assets/avatar.svg','assets/stars.svg'];
 
