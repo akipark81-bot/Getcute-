@@ -4,73 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GetCute</title>
-
+  <meta name="theme-color" content="#ffe9ff" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="style.css?v=11" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
+  <!-- Header קבוע עם מטבעות -->
   <header class="app-header">
-    <h1>GetCute</h1>
-    <div class="money">💎 <span id="coins">0</span></div>
+    <div class="brand">GetCute</div>
+    <div class="wallet" id="wallet">💰 0</div>
   </header>
 
-  <main class="screen">
-    <div class="avatar-stage">
-      <!-- כאן נטען את ספריית החלקים (ה־symbols) -->
-      <div id="parts-wrap" aria-hidden="true" style="display:none"></div>
+  <!-- אזור התוכן הדינמי -->
+  <main id="view" class="view"></main>
 
-      <!-- הדמות שמורכבת מ-<use> -->
-      <svg id="avatar-svg" viewBox="0 0 300 360" class="avatar-svg">
-        <use id="skinUse"   href="#skin_3"></use>
-        <use id="hairUse"   href="#hair_2"></use>
-        <use id="eyesUse"   href="#eyes_3"></use>
-        <use id="topUse"    href="#top_1"></use>
-        <use id="bottomUse" href="#bottom_1"></use>
-        <use id="skirtUse"  href="#skirt_0"></use>
-        <use id="dressUse"  href="#dress_0"></use>
-        <use id="shoesUse"  href="#shoes_1"></use>
-        <use href="#stars_deco"></use>
-      </svg>
-    </div>
-
-    <!-- מסכים (טאבים) -->
-    <section id="home" class="view active">
-      <div class="card">
-        <h2>Your avatar</h2>
-        <p class="hint">Tip: switch tabs to customize</p>
-      </div>
-    </section>
-
-    <section id="avatar" class="view">
-      <div class="card">
-        <h2>Avatar Studio</h2>
-        <p>בשלב הבא נוסיף שלטי בחירה (שיער/עיניים/בגדים).</p>
-      </div>
-    </section>
-
-    <section id="food" class="view">
-      <div class="card"><h2>Food & Water</h2></div>
-    </section>
-
-    <section id="workouts" class="view">
-      <div class="card"><h2>Workouts</h2></div>
-    </section>
-
-    <section id="calendar" class="view">
-      <div class="card"><h2>Calendar</h2></div>
-    </section>
-  </main>
-
-  <nav class="tabs">
-    <button data-tab="home" class="active">🏠</button>
-    <button data-tab="avatar">👗</button>
-    <button data-tab="food">🍓</button>
-    <button data-tab="workouts">💪</button>
-    <button data-tab="calendar">📅</button>
+  <!-- ניווט תחתון קבוע -->
+  <nav class="bottom-nav">
+    <button data-route="home"      aria-label="Home">🏠</button>
+    <button data-route="avatar"    aria-label="Avatar">🧑‍🎨</button>
+    <button data-route="workouts"  aria-label="Workouts">💪</button>
+    <button data-route="food"      aria-label="Food & Water">🍽️</button>
+    <button data-route="calendar"  aria-label="Calendar">📅</button>
   </nav>
 
-  <script src="app.js?v=10" defer></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () =>
+        navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+    }
+  </script>
 </body>
 </html>
