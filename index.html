@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GetCute</title>
+
+  <!-- צבע למסך מובייל -->
+  <meta name="theme-color" content="#ffe9ff" />
+
+  <!-- Manifest (PWA) -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- אייקון למסך בית (אופציונלי, כשתעלי PNGים) -->
+  <!-- <link rel="apple-touch-icon" href="assets/icon-192.png" /> -->
+
+  <!-- ה-CSS הראשי -->
+  <link rel="stylesheet" href="style.css" />
+
+  <script>
+    // רישום service worker (PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <h1>GetCute</h1>
+    </header>
+
+    <main>
+      <!-- הדמות -->
+      <div class="avatar-wrap">
+        <img src="assets/stars.svg" alt="" aria-hidden="true" class="stars" />
+        <img src="assets/avatar.svg" alt="Cute Avatar" class="avatar" />
+      </div>
+
+      <!-- כפתורי אימון לדוגמה -->
+      <section class="actions">
+        <p class="hint">Tap a workout you did today:</p>
+        <div class="btns">
+          <button class="pill" data-type="cardio">Cardio</button>
+          <button class="pill" data-type="strength">Strength</button>
+          <button class="pill" data-type="yoga">Yoga</button>
+          <button class="pill" data-type="walk">Walk</button>
+        </div>
+
+        <button id="mark" class="cta">✨ I worked out today!</button>
+        <p id="msg" class="msg">Not marked yet</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
