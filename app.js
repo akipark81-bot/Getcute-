@@ -1,33 +1,45 @@
-/* ---------- state & storage ---------- */
-const LS_KEY = 'getcute:v1';
-const state = load() || {
-  coins: 0,
-  mood: 'neutral', // 'happy' | 'sad' | 'angry'
-  avatar: { hair:'default', top:'basic', bottom:'basic', accessories:[] },
-  inventory: { tops:['basic'], bottoms:['basic'], acc:[] },
-  workouts: [], // {date, type, minutes, coins}
-  food: [],     // {date, item, kcal, coins}
-  waterMl: 0,   // today ml
-};
+/* ========= GetCute v11 ========= */
 
-function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
-function load(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)); }catch{ return null; } }
+const APP_VERSION = '11';
+const LS_KEY = 'getcute:v1';
+
+/* ---- state ---- */
+function defaultState(){
+  return {
+    coins: 0,
+    skin: 3, hair: 2, eyes: 3,
+    top: 1, bottom: 1, skirt: 0, dress: 0,
+    shoes: 1,
+    mood: 'neutral',
+    avatar: { hair:'default', top:'basic', bottom:'basic', accessories:[] },
+    inventory: { tops:['basic'], bottoms:['basic'], acc:[] },
+    workouts: [],           // {date, type, minutes, coins}
+    food: [],               // {date, item, kcal, coins}
+    waterML: 0              // today only
+  };
+}
+
+function save(state){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function load(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)) || defaultState(); }catch{ return defaultState(); } }
 function today(){ return new Date().toISOString().slice(0,10); }
 
-/* ---------- router ---------- */
+let state = load();
+
+/* ---- DOM refs ---- */
+const view   = document.getElementById('view');
+const wallet = document.getElementById('wallet');
+
+/* ---- router ---- */
 const routes = {
   home: renderHome,
   avatar: renderAvatar,
   workouts: renderWorkouts,
   food: renderFood,
-  calendar: renderCalendar
+  calendar: renderCalendar,
 };
-const view = document.getElementById('view');
-const wallet = document.getElementById('wallet');
 
 function navigate(route){
   if(!routes[route]) route = 'home';
-  // עדכון כפתור פעיל בניווט
   document.querySelectorAll('.bottom-nav button').forEach(b=>{
     b.classList.toggle('is-active', b.dataset.route===route);
   });
@@ -35,20 +47,23 @@ function navigate(route){
   updateHeader();
 }
 function updateHeader(){ wallet.textContent = `💰 ${state.coins}`; }
+
+/* ---- events: nav ---- */
 document.querySelectorAll('.bottom-nav button').forEach(btn=>{
   btn.addEventListener('click', ()=> navigate(btn.dataset.route));
 });
 
-/* ---------- screens ---------- */
-// 01 Home / Dashboard
+/* -------- screens -------- */
+
+/* 01 Home */
 function renderHome(){
   const last = state.workouts.filter(w=>w.date===today()).length>0;
   const moodClass = last ? 'mood--good' : 'mood--bad';
   view.innerHTML = `
     <section class="card pop-in">
       <header class="grid cols-2" style="align-items:center">
-        <div><h2 style="margin:0">Your avatar</h2><div class="badge ${moodClass}">Mood: ${state.mood}</div></div>
-        <img src="assets/avatar.svg" alt="Avatar" style="justify-self:end; width:96px; height:96px" class="bounce"/>
+        <div><h2 style="margin:0">Your avatar</h2><div class="badge ${moodClass}"></div></div>
+        <img src="assets/avatar.svg" alt="Avatar" style="justify-self:end;width:96px;height:96px"/>
       </header>
       <div style="margin-top:12px" class="grid cols-2">
         <button class="btn" id="quick-ok">✨ I worked out</button>
@@ -59,10 +74,10 @@ function renderHome(){
   view.querySelector('#quick-ok').onclick = ()=>{
     addWorkout({type:'Quick', minutes:10});
   };
-  view.querySelector('[data-go="avatar"]').onclick = ()=>navigate('avatar');
+  view.querySelector('[data-go="avatar"]').onclick = ()=> navigate('avatar');
 }
 
-// 02 Avatar / Wardrobe (שלב ראשון—דוגמא)
+/* 02 Avatar (Wardrobe) */
 function renderAvatar(){
   view.innerHTML = `
     <section class="card pop-in">
@@ -72,39 +87,97 @@ function renderAvatar(){
         <button class="btn" data-buy="bottom:skirt">Buy Skirt (💰10)</button>
         <button class="btn" data-buy="acc:stars">Buy Stars ✨ (💰8)</button>
       </div>
+
       <hr style="margin:14px 0; border:none; border-top:1px dashed #f4c1e6">
+
       <div class="grid cols-3" id="equip">
         <button class="btn secondary" data-equip="top:basic">Top: Basic</button>
         <button class="btn secondary" data-equip="bottom:basic">Bottom: Basic</button>
         <button class="btn secondary" data-equip="acc:none">No accessories</button>
       </div>
+
+      <div class="avatar-stage" style="margin-top:16px">
+        <div id="parts-wrap" aria-hidden="true" style="display:none"></div>
+        <svg id="avatar-svg" viewBox="0 0 300 360" class="avatar-svg">
+          <use id="skinUse"   href="#skin_3"></use>
+          <use id="hairUse"   href="#hair_2"></use>
+          <use id="eyesUse"   href="#eyes_3"></use>
+          <use id="dressUse"  href="#dress_0"></use>
+          <use id="topUse"    href="#top_1"></use>
+          <use id="bottomUse" href="#bottom_1"></use>
+          <use id="skirtUse"  href="#skirt_0"></use>
+          <use id="shoesUse"  href="#shoes_1"></use>
+        </svg>
+      </div>
     </section>
   `;
+
+  // טוענים את ספריית החלקים (ה-symbols) ואז מציירים את המצב
+  fetch('assets/avatar_parts.svg?v='+APP_VERSION)
+    .then(r=>r.text())
+    .then(txt => {
+      document.getElementById('parts-wrap').innerHTML = txt;
+      applyAvatar();
+    })
+    .catch(err => console.warn('Failed loading avatar_parts.svg', err));
+
   // קניה
   view.querySelectorAll('#shop [data-buy]').forEach(el=>{
     el.onclick = ()=>{
       const [cat,item] = el.dataset.buy.split(':');
-      const price = (cat==='acc')?8:10;
-      if(state.coins<price){ alert('Not enough coins'); return; }
+      const price = (cat==='acc'?8:10);
+      if(state.coins < price){ alert('Not enough coins'); return; }
       state.coins -= price;
-      const bucket = cat==='top'?'tops':cat==='bottom'?'bottoms':'acc';
-      if(!state.inventory[bucket].includes(item)) state.inventory[bucket].push(item);
-      save(); updateHeader(); alert('Bought!');
+      if(cat==='top') state.inventory.tops.push(item);
+      if(cat==='bottom') state.inventory.bottoms.push(item);
+      if(cat==='acc') state.inventory.acc.push(item);
+      save(state); updateHeader(); alert('Purchased!');
     };
   });
-  // ציוד
+
+  // לבישה
   view.querySelectorAll('#equip [data-equip]').forEach(el=>{
     el.onclick = ()=>{
       const [cat,item] = el.dataset.equip.split(':');
       if(cat==='acc' && item==='none'){ state.avatar.accessories=[]; }
       else if(cat==='top'){ state.avatar.top=item; }
       else if(cat==='bottom'){ state.avatar.bottom=item; }
-      save(); alert('Equipped!');
+      save(state); applyAvatar(); alert('Equipped!');
     };
   });
 }
 
-// 03 Workouts
+/* ציור האבטר על סמך state */
+function applyAvatar(){
+  const s = state;
+  // לוגיקה: אם יש שמלה – היא גוברת על top/bottom/skirt
+  if(s.dress && s.dress>0){
+    setUse('dressUse',  `dress_${s.dress}`);
+    setUse('topUse',    'none');
+    setUse('bottomUse', 'none');
+    setUse('skirtUse',  'none');
+  }else{
+    setUse('dressUse',  'dress_0');
+    setUse('topUse',    `top_${s.top||1}`);
+    if(s.skirt && s.skirt>0){
+      setUse('skirtUse',  `skirt_${s.skirt}`);
+      setUse('bottomUse', 'none');
+    }else{
+      setUse('skirtUse',  'skirt_0');
+      setUse('bottomUse', `bottom_${s.bottom||1}`);
+    }
+  }
+  setUse('skinUse',  `skin_${s.skin||3}`);
+  setUse('hairUse',  `hair_${s.hair||1}`);
+  setUse('eyesUse',  `eyes_${s.eyes||1}`);
+  setUse('shoesUse', `shoes_${s.shoes||1}`);
+}
+function setUse(id, sym){
+  const u = document.getElementById(id);
+  if(u) u.setAttribute('href', `#${sym}`);
+}
+
+/* 03 Workouts (מינימלי בינתיים) */
 function renderWorkouts(){
   view.innerHTML = `
     <section class="card pop-in">
@@ -122,74 +195,18 @@ function renderWorkouts(){
   });
 }
 
-// 04 Food & Water (סקיצה ראשונית)
-function renderFood(){
-  view.innerHTML = `
-    <section class="card pop-in">
-      <h2>Food & Water</h2>
-      <div class="grid cols-3" id="presets">
-        <button class="btn" data-k="150">🥗 Salad 150</button>
-        <button class="btn" data-k="250">🍚 Bowl 250</button>
-        <button class="btn" data-k="90">🍎 Fruit 90</button>
-      </div>
-      <div style="margin:12px 0" class="grid cols-2">
-        <input id="customFood" class="card" placeholder="Custom kcal…" />
-        <button class="btn" id="addFood">Add</button>
-      </div>
-      <div class="grid cols-3" style="align-items:center">
-        <div>Water today: <strong id="waterVal">${state.waterMl} ml</strong></div>
-        <button class="btn" data-water="250">+250ml</button>
-        <button class="btn secondary" data-water="500">+500ml</button>
-      </div>
-    </section>
-  `;
-  // presets
-  view.querySelectorAll('#presets [data-k]').forEach(b=>{
-    b.onclick = ()=> addFood({item:'Preset', kcal:+b.dataset.k});
-  });
-  view.querySelector('#addFood').onclick = ()=>{
-    const v = +view.querySelector('#customFood').value || 0;
-    if(v>0) addFood({item:'Custom', kcal:v});
-  };
-  view.querySelectorAll('[data-water]').forEach(b=>{
-    b.onclick = ()=>{
-      state.waterMl += +b.dataset.water;
-      save();
-      view.querySelector('#waterVal').textContent = `${state.waterMl} ml`;
-      addCoins(1); // טיפונת מטבעות על שתייה
-    };
-  });
-}
+/* 04 Food + 05 Calendar – שמורות למימוש הבא */
+function renderFood(){ view.innerHTML = `<section class="card pop-in"><h2>Food</h2><p>Coming soon.</p></section>`; }
+function renderCalendar(){ view.innerHTML = `<section class="card pop-in"><h2>Calendar</h2><p>Coming soon.</p></section>`; }
 
-// 05 Calendar / Progress (פשוט: מונה יומי)
-function renderCalendar(){
-  const todayStr = today();
-  const count = state.workouts.filter(w=>w.date===todayStr).length;
-  view.innerHTML = `
-    <section class="card pop-in">
-      <h2>Progress</h2>
-      <p>Workouts today: <strong>${count}</strong></p>
-      <p>Total coins: <strong>${state.coins}</strong></p>
-    </section>
-  `;
-}
-
-/* ---------- helpers (economy) ---------- */
-function addCoins(n){ state.coins += n; save(); updateHeader(); }
+/* כללים */
 function addWorkout({type, minutes}){
-  const coins = Math.max(5, Math.round(minutes/4)); // 5–15 לפי משך
-  state.workouts.push({date:today(), type, minutes, coins});
-  addCoins(coins);
-  state.mood = 'happy';
-  save();
-  alert(`Great! +${coins} coins`);
-}
-function addFood({item, kcal}){
-  const coins = Math.max(1, Math.round(300 - Math.min(kcal,300))/100); // קטנה, 0–3
-  state.food.push({date:today(), item, kcal, coins});
-  addCoins(coins);
-  save();
+  state.workouts.push({date:today(), type, minutes, coins:5});
+  state.coins += 5;
+  save(state); updateHeader();
+  alert('Great job! +5 💰');
 }
 
+/* אתחול ראשון */
+navigate('home');
 updateHeader();
-navigate('home'); // הפעלה ראשונית
