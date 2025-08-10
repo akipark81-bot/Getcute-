@@ -35,3 +35,16 @@ function initAvatar() {
 // דוגמה: בעתיד, החלפות
 // setHref('hairUse', '#hair_5');
 // setHref('eyesUse', '#eyes_4');
+// --- Load avatar parts SVG into the hidden container ---
+document.addEventListener('DOMContentLoaded', () => {
+  const wrap = document.getElementById('parts-wrap');
+  if (!wrap) return;
+
+  fetch('assets/avatar_parts.svg?v=9')
+    .then(r => r.text())
+    .then(txt => {
+      wrap.innerHTML = txt;       // עכשיו ה-<use href="#..."> ימצאו את ה-symols
+      applyAvatar(avatarState);   // מציירים שוב את הדמות אחרי שהחלקים נטענו
+    })
+    .catch(err => console.warn('Failed loading avatar_parts.svg', err));
+});
