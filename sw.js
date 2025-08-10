@@ -1,4 +1,4 @@
-const CACHE = 'getcute-v1';
+const CACHE = 'getcute-v2';
 const ASSETS = ['.', 'index.html', 'style.css', 'app.js', 'manifest.json',
   'assets/icon-192.png','assets/icon-512.png','assets/avatar.svg','assets/stars.svg'];
 
