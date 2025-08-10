@@ -3,37 +3,44 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GetCute</title>
   <meta name="theme-color" content="#ffe9ff" />
+  <title>GetCute</title>
+
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="style.css" />
+  <!-- גרסת קובץ כדי לעקוף cache -->
+  <link rel="stylesheet" href="style.css?v=11" />
 </head>
 <body>
-  <!-- Header קבוע עם מטבעות -->
+  <!-- Header קבוע עם סכום הכסף -->
   <header class="app-header">
-    <div class="brand">GetCute</div>
+    <h1 class="brand">GetCute</h1>
     <div class="wallet" id="wallet">💰 0</div>
   </header>
 
-  <!-- אזור התוכן הדינמי -->
-  <main id="view" class="view"></main>
+  <!-- כאן נרנדר את כל המסכים באופן דינמי -->
+  <main class="screen">
+    <div id="view" class="view"></div>
+  </main>
 
   <!-- ניווט תחתון קבוע -->
-  <nav class="bottom-nav">
-    <button data-route="home"      aria-label="Home">🏠</button>
-    <button data-route="avatar"    aria-label="Avatar">🧑‍🎨</button>
-    <button data-route="workouts"  aria-label="Workouts">💪</button>
-    <button data-route="food"      aria-label="Food & Water">🍽️</button>
-    <button data-route="calendar"  aria-label="Calendar">📅</button>
+  <nav class="tabs bottom-nav">
+    <button data-route="home"    class="is-active">🏠</button>
+    <button data-route="avatar">🧒</button>
+    <button data-route="food">🍓</button>
+    <button data-route="workouts">💪</button>
+    <button data-route="calendar">🗓️</button>
   </nav>
 
-  <script src="app.js"></script>
+  <!-- SW (אפשרי) -->
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () =>
-        navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
     }
   </script>
+
+  <script src="app.js?v=11" defer></script>
 </body>
 </html>
