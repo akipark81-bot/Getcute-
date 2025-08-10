@@ -6,41 +6,44 @@
   <meta name="theme-color" content="#ffe9ff" />
   <title>GetCute</title>
 
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <!-- גרסת קובץ כדי לעקוף cache -->
-  <link rel="stylesheet" href="style.css?v=11" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css?v=13" />
 </head>
 <body>
-  <!-- Header קבוע עם סכום הכסף -->
+  <!-- Header: לוגו + כסף -->
   <header class="app-header">
-    <h1 class="brand">GetCute</h1>
-    <div class="wallet" id="wallet">💰 0</div>
+    <div class="brand">GetCute</div>
+    <div class="wallet" id="wallet">🪙 0</div>
   </header>
 
-  <!-- כאן נרנדר את כל המסכים באופן דינמי -->
-  <main class="screen">
-    <div id="view" class="view"></div>
-  </main>
+  <!-- View container -->
+  <main id="view" class="view"></main>
 
-  <!-- ניווט תחתון קבוע -->
+  <!-- ניווט תחתון -->
   <nav class="tabs bottom-nav">
-    <button data-route="home"    class="is-active">🏠</button>
-    <button data-route="avatar">🧒</button>
-    <button data-route="food">🍓</button>
-    <button data-route="workouts">💪</button>
-    <button data-route="calendar">🗓️</button>
+    <button data-route="home"   aria-label="Home">🏠</button>
+    <button data-route="avatar" aria-label="Avatar">👧</button>
+    <button data-route="workouts" aria-label="Workouts">💪</button>
+    <button data-route="food"   aria-label="Food">🍓</button>
+    <button data-route="calendar" aria-label="Calendar">📅</button>
   </nav>
 
-  <!-- SW (אפשרי) -->
+  <!-- ספריית חלקי האבטר נטענת לתוך הדף (נסתר) -->
+  <div id="parts-wrap" aria-hidden="true" style="display:none"></div>
+
+  <!-- JS -->
+  <script src="app.js?v=13" defer></script>
   <script>
+    // Service Worker (לא חובה, אבל טוב)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(console.error);
       });
     }
   </script>
-
-  <script src="app.js?v=11" defer></script>
 </body>
 </html>
