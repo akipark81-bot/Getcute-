@@ -1,86 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GetCute</title>
-  <meta name="theme-color" content="#ffe9ff" />
+
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <link rel="stylesheet" href="style.css" />
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(console.error);
-      });
-    }
-  </script>
 </head>
 <body>
   <header class="app-header">
-    <div class="brand">GetCute</div>
-    <div class="wallet"><span id="coins">0</span> ✨</div>
+    <h1>GetCute</h1>
+    <div class="money">💎 <span id="coins">0</span></div>
   </header>
 
-  <main class="builder">
-    <!-- הבמה של הדמות -->
-    <section class="stage">
-      <!-- נטען את ה־symbols -->
-      <object id="parts" type="image/svg+xml" data="assets/avatar_parts.svg" aria-hidden="true"></object>
+  <main class="screen">
+    <div class="avatar-stage">
+      <!-- כאן נטמיע את ספריית החלקים -->
+      <div id="parts-wrap" aria-hidden="true" style="display:none"></div>
 
-      <!-- קנבס שה־JS מרכיב -->
-      <svg id="avatar" viewBox="0 0 300 360" role="img" aria-label="Avatar preview"></svg>
-    </section>
-
-    <!-- הבורר לכל חלק -->
-    <section class="panels">
-      <div class="panel">
-        <h3>Skin</h3>
-        <div class="swatches" id="skinSwatches"></div>
-      </div>
-
-      <div class="panel row">
-        <h3>Hair</h3>
-        <div class="controls" data-key="hair"><button class="prev">◀</button><span class="value" id="hairVal">1/6</span><button class="next">▶</button></div>
-      </div>
-
-      <div class="panel row">
-        <h3>Eyes</h3>
-        <div class="controls" data-key="eyes"><button class="prev">◀</button><span class="value" id="eyesVal">1/6</span><button class="next">▶</button></div>
-      </div>
-
-      <div class="panel row">
-        <h3>Top</h3>
-        <div class="controls" data-key="top"><button class="prev">◀</button><span class="value" id="topVal">1/6</span><button class="next">▶</button></div>
-      </div>
-
-      <div class="panel row">
-        <h3>Bottom</h3>
-        <div class="controls" data-key="bottom"><button class="prev">◀</button><span class="value" id="bottomVal">1/6</span><button class="next">▶</button></div>
-      </div>
-
-      <div class="panel row">
-        <h3>Dress</h3>
-        <div class="controls" data-key="dress"><button class="prev">◀</button><span class="value" id="dressVal">1/6</span><button class="next">▶</button></div>
-        <p class="hint">Tip: Dress מסתיר Top/Bottom.</p>
-      </div>
-
-      <div class="panel row">
-        <h3>Shoes</h3>
-        <div class="controls" data-key="shoes"><button class="prev">◀</button><span class="value" id="shoesVal">1/6</span><button class="next">▶</button></div>
-      </div>
-    </section>
+      <!-- הדמות שמרכיבים בעזרת <use> -->
+      <svg id="avatar-svg" viewBox="0 0 300 360" class="avatar-svg">
+        <use id="skinUse"   href="#skin_3"></use>
+        <use id="hairUse"   href="#hair_1"></use>
+        <use id="eyesUse"   href="#eyes_1"></use>
+        <use id="topUse"    href="#top_1"></use>
+        <use id="bottomUse" href="#bottom_1"></use>
+        <use id="dressUse"  href=""></use>
+        <use id="shoesUse"  href="#shoes_1"></use>
+      </svg>
+    </div>
   </main>
 
-  <!-- ניווט תחתון (placeholder – נרחיב בהמשך) -->
-  <nav class="bottom-nav">
-    <button class="active">Avatar</button>
-    <button disabled>Home</button>
-    <button disabled>Food</button>
-    <button disabled>Workouts</button>
-    <button disabled>Progress</button>
+  <nav class="tabs">
+    <button>Home</button><button>Avatar</button><button>Food</button>
+    <button>Workouts</button><button>Calendar</button>
   </nav>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () =>
+        navigator.serviceWorker.register('./sw.js').catch(console.error)
+      );
+    }
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
