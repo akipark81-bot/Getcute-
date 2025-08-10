@@ -1,50 +1,80 @@
-// טוען את ספריית החלקים כ-inline כדי ש-<use href="#..."> יעבוד בכל דפדפן
-fetch('assets/avatar_parts.svg')
-  .then(r => r.text())
-  .then(txt => {
-    document.getElementById('parts-wrap').innerHTML = txt;
-    initAvatar();
-  })
-  .catch(err => console.error('parts load failed', err));
+const APP_VERSION = '10';
 
-function setHref(id, val) {
-  document.getElementById(id).setAttribute('href', val || '');
+// --- State -------------------------------------------------------
+const defaultState = {
+  coins: 0,
+  skin: 3, hair: 2, eyes: 3,
+  top: 1, bottom: 1, skirt: 0, dress: 0,
+  shoes: 1
+};
+let avatarState = loadState();
+
+// --- Utils -------------------------------------------------------
+function saveState(){
+  localStorage.setItem('gc_state', JSON.stringify(avatarState));
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem('gc_state');
+    return raw ? { ...defaultState, ...JSON.parse(raw) } : { ...defaultState };
+  }catch(e){ return { ...defaultState }; }
+}
+function setUse(id, sym){ const u = document.getElementById(id); if(u) u.setAttribute('href', '#'+sym); }
+
+// draw avatar based on state
+function applyAvatar(state=avatarState){
+  // logic: אם יש שמלה, מסתירים top/bottom/skirt
+  if(state.dress && state.dress > 0){
+    setUse('dressUse',  `dress_${state.dress}`);
+    setUse('topUse',    'none');
+    setUse('bottomUse', 'none');
+    setUse('skirtUse',  'none');
+  }else{
+    setUse('dressUse',  'dress_0'); // ריק
+    setUse('topUse',    `top_${state.top||1}`);
+    if(state.skirt && state.skirt>0){
+      setUse('skirtUse',  `skirt_${state.skirt}`);
+      setUse('bottomUse', 'none');
+    }else{
+      setUse('skirtUse',  'skirt_0');
+      setUse('bottomUse', `bottom_${state.bottom||1}`);
+    }
+  }
+  setUse('skinUse',  `skin_${state.skin||3}`);
+  setUse('hairUse',  `hair_${state.hair||1}`);
+  setUse('eyesUse',  `eyes_${state.eyes||1}`);
+  setUse('shoesUse', `shoes_${state.shoes||1}`);
+
+  const coinsEl = document.getElementById('coins');
+  if(coinsEl) coinsEl.textContent = String(state.coins||0);
 }
 
-function initAvatar() {
-  // ברירות מחדל לתצוגה
-  const state = {
-    skin:   '#skin_3',
-    hair:   '#hair_2',
-    eyes:   '#eyes_3',
-    top:    '#top_1',
-    bottom: '#bottom_2',
-    dress:  '',           // אם בוחרים שמלה: לשים '#dress_1' ולנקות top/bottom
-    shoes:  '#shoes_1'
-  };
-  setHref('skinUse',   state.skin);
-  setHref('hairUse',   state.hair);
-  setHref('eyesUse',   state.eyes);
-  setHref('topUse',    state.top);
-  setHref('bottomUse', state.bottom);
-  setHref('dressUse',  state.dress);
-  setHref('shoesUse',  state.shoes);
-  console.log('avatar ready');
-}
-
-// דוגמה: בעתיד, החלפות
-// setHref('hairUse', '#hair_5');
-// setHref('eyesUse', '#eyes_4');
-// --- Load avatar parts SVG into the hidden container ---
+// --- Load parts library ------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   const wrap = document.getElementById('parts-wrap');
   if (!wrap) return;
 
-  fetch('assets/avatar_parts.svg?v=9')
+  fetch('assets/avatar_parts.svg?v='+APP_VERSION)
     .then(r => r.text())
     .then(txt => {
-      wrap.innerHTML = txt;       // עכשיו ה-<use href="#..."> ימצאו את ה-symols
-      applyAvatar(avatarState);   // מציירים שוב את הדמות אחרי שהחלקים נטענו
+      wrap.innerHTML = txt;   // מטעין את כל ה-symbols לדף
+      applyAvatar();
     })
     .catch(err => console.warn('Failed loading avatar_parts.svg', err));
 });
+
+// --- Tabs --------------------------------------------------------
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tabs button[data-tab]');
+  if(!btn) return;
+  const target = btn.dataset.tab;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active', b===btn));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id===target));
+});
+
+// --- SW (אפשר לבטל זמנית אם רוצים) ------------------------------
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}
