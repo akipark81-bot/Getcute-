@@ -1,0 +1,84 @@
+:root{
+  --bg:#fff6fb;
+  --ink:#3a2f3c;
+  --accent:#ff96d5;
+  --accent-2:#9cc8ff;
+  --pill:#ffe3f5;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color:var(--ink);
+  background: radial-gradient(1200px 800px at 50% -200px, #ffe9ff 0%, transparent 70%) , var(--bg);
+}
+.wrap{max-width:720px;margin:0 auto;padding:20px}
+
+.topbar h1{
+  margin:8px 0 18px;
+  font-weight:800;
+  letter-spacing:.5px;
+  color:#6b4a7a;
+  text-align:center;
+}
+
+/* אווטאר + כוכבים */
+.avatar-wrap{
+  position:relative;
+  width:min(260px, 75vw);
+  margin:10px auto 16px;
+  aspect-ratio:1/1;
+}
+.avatar{
+  width:100%;
+  display:block;
+  border-radius:24px;
+  background: radial-gradient(circle at 50% 40%, #fff 0%, #fff0 70%);
+  box-shadow:0 10px 30px rgba(255,150,213,.35);
+  animation:bounce 1.6s ease-in-out infinite;
+}
+.stars{
+  position:absolute;
+  inset:-8% -8% auto -8%;
+  width:116%;
+  pointer-events:none;
+  animation: twinkle 3s linear infinite;
+  opacity:.9;
+}
+
+/* כפתורים */
+.actions{padding:8px 8px 24px;text-align:center}
+.hint{margin:6px 0 10px;opacity:.7}
+.btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.pill{
+  border:none; padding:10px 14px; border-radius:999px;
+  background:var(--pill); color:#5a4762; font-weight:600;
+  box-shadow:0 4px 0 #ffd0ea; transform:translateY(0);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.pill:active{transform:translateY(2px);box-shadow:0 2px 0 #ffd0ea}
+.pill:hover{filter:brightness(1.05)}
+
+.cta{
+  border:none; padding:14px 18px; border-radius:14px;
+  background:linear-gradient(180deg, var(--accent), #ff70c6);
+  color:white; font-weight:800; letter-spacing:.3px;
+  box-shadow:0 8px 0 #ff57ba;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.cta:hover{transform:translateY(-2px)}
+.cta:active{transform:translateY(2px);box-shadow:0 4px 0 #ff57ba}
+
+.msg{margin-top:10px; font-weight:700}
+
+/* אנימציות */
+@keyframes bounce{
+  0%,100%{ transform:translateY(0) }
+  50%    { transform:translateY(-10px) }
+}
+@keyframes twinkle{
+  0%  { filter:brightness(1) }
+  50% { filter:brightness(1.2) }
+  100%{ filter:brightness(1) }
+}
